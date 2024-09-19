@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Button, Card, CardContent, Box, CircularProgress } from '@mui/material';
 import { Grid } from '@mui/joy';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { fetchCharacters } from '../store/charactersSlice';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
@@ -12,29 +12,23 @@ const CharactersList: React.FC = () => {
     const navigate = useNavigate();
     const { list: characters, loading, error, nextPage } = useAppSelector(state => state?.characters);
 
-    const [searchParams, setSearchParams] = useSearchParams();
-    const page = parseInt(searchParams.get('page') || '1', 10);
-    const searchQuery = searchParams.get('search') || ''; 
-
-    const [searchTerm, setSearchTerm] = useState(searchQuery);
+    const [page, setPage] = useState(1);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         dispatch(fetchCharacters({ page, search: searchTerm }));
     }, [dispatch, page, searchTerm]);
 
     const handleNextPage = () => {
-        const newPage = String(page + 1);
-        setSearchParams({ page: newPage, search: searchTerm });
+        setPage(prevPage => prevPage + 1);
     };
 
     const handlePreviousPage = () => {
-        const newPage = String(page - 1);
-        setSearchParams({ page: newPage, search: searchTerm });
+        setPage(prevPage => (prevPage > 1 ? prevPage - 1 : 1));
     };
 
     const handleSearchChange = (newSearchTerm: string) => {
         setSearchTerm(newSearchTerm);
-        setSearchParams({ page: '1', search: newSearchTerm });
     };
 
     if (loading) return <CircularProgress />;

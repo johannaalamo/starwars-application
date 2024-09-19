@@ -14,26 +14,27 @@ const CharactersList: React.FC = () => {
 
     const [searchParams, setSearchParams] = useSearchParams();
     const page = parseInt(searchParams.get('page') || '1', 10);
+    const searchQuery = searchParams.get('search') || ''; 
 
-    const [searchTerm, setSearchTerm] = useState('');
-
+    const [searchTerm, setSearchTerm] = useState(searchQuery);
 
     useEffect(() => {
-        dispatch(fetchCharacters({ page }));
-    }, [dispatch, page]);
+        dispatch(fetchCharacters({ page, search: searchTerm }));
+    }, [dispatch, page, searchTerm]);
 
     const handleNextPage = () => {
         const newPage = String(page + 1);
-        setSearchParams({ page: newPage });
+        setSearchParams({ page: newPage, search: searchTerm });
     };
 
     const handlePreviousPage = () => {
         const newPage = String(page - 1);
-        setSearchParams({ page: newPage });
+        setSearchParams({ page: newPage, search: searchTerm });
     };
 
     const handleSearchChange = (newSearchTerm: string) => {
         setSearchTerm(newSearchTerm);
+        setSearchParams({ page: '1', search: newSearchTerm });
     };
 
     if (loading) return <CircularProgress />;

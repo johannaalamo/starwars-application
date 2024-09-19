@@ -8,21 +8,7 @@ const App: React.FC = () => {
     <Router>
       <Routes>
         <Route path="/" element={<CharactersList />} />
-        <Route path="/character" element={<CharacterInfo character={{
-          name: '',
-          height: '',
-          mass: '',
-          hair_color: '',
-          skin_color: '',
-          eye_color: '',
-          birth_year: '',
-          gender: '',
-          homeworld: '',
-          films: [],
-          species: [],
-          vehicles: [],
-          starships: []
-        }} />} />
+        <Route path="/character/:name" element={<CharacterInfo />} />
       </Routes>
     </Router>
   );

@@ -1,46 +1,89 @@
-import React from 'react';
-import { Typography, TextField, Button, Card, CardContent, Box } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Typography, Button, Card, CardContent, Box, CircularProgress } from '@mui/material';
 import { Grid } from '@mui/joy';
 import { useNavigate } from 'react-router-dom';
+import { fetchCharacters } from '../store/charactersSlice';
+import { useAppDispatch } from '../hooks/useAppDispatch';
+import { useAppSelector } from '../hooks/useAppSelector';
+import SearchBar from '../components/SearchBar';
 
 const CharactersList: React.FC = () => {
-
+    const dispatch = useAppDispatch();
+    const { list: characters, loading, error, nextPage, previousPage } = useAppSelector(state => state?.characters);
     const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState('');
+
+    useEffect(() => {
+        dispatch(fetchCharacters({ page: 1, search: searchTerm }));
+    }, [dispatch, searchTerm]);
+
+    const handleNextPage = () => {
+        if (nextPage) {
+            const nextPageNumber = Number(new URL(nextPage).searchParams.get('page'));
+            dispatch(fetchCharacters({ page: nextPageNumber, search: searchTerm }));
+        }
+    };
+
+    const handlePreviousPage = () => {
+        if (previousPage) {
+            const prevPageNumber = Number(new URL(previousPage).searchParams.get('page'));
+            dispatch(fetchCharacters({ page: prevPageNumber, search: searchTerm }));
+        }
+    };
+
+    const handleSearchChange = (newSearchTerm: string) => {
+        setSearchTerm(newSearchTerm);
+    };
+
+    if (loading) return <CircularProgress />;
+
+    if (error) return <Typography color="error">{error}</Typography>;
 
     return (
         <Box padding="20px">
-
             <Typography variant="h4" component="h1" gutterBottom>
                 Star Wars Characters
             </Typography>
 
-            <TextField
-                fullWidth
-                variant="outlined"
-                placeholder="Search characters..."
-                style={{ marginBlock: '50px' }}
-            />
+            <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange}/>
 
             <Grid container spacing={2}>
-                <Grid xs={12} sm={6} md={4}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="h6">Luke Skywalker</Typography>
-                            <Button variant="contained" color="primary" onClick={() => navigate(`/character`)}>
-                                Ver detalles
-                            </Button>
-                        </CardContent>
-                    </Card>
-                </Grid>
+                {characters.map((character, index) => (
+                    <Grid xs={12} sm={6} md={4} key={index}>
+                        <Card>
+                            <CardContent>
+                                <Typography variant="h6" marginBottom={"10px"}>{character?.name}</Typography>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => navigate(`/character/${character?.name?.toLowerCase().replace(/\s+/g, '-')}`)}
+                                >
+                                    Details
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                ))}
             </Grid>
 
-
             <Box display="flex" justifyContent="space-between" marginTop={2}>
-                <Button variant="contained" color="secondary" style={{ marginTop: '20px' }}>
-                    Anterior
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    style={{ marginTop: '20px' }}
+                    onClick={handlePreviousPage}
+                    disabled={!previousPage}
+                >
+                    Previous
                 </Button>
-                <Button variant="contained" color="secondary" style={{ marginTop: '20px' }}>
-                    Siguiente
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    style={{ marginTop: '20px' }}
+                    onClick={handleNextPage}
+                    disabled={!nextPage}
+                >
+                    Next
                 </Button>
             </Box>
         </Box>

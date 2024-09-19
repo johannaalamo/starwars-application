@@ -1,120 +1,81 @@
-import React from 'react';
-import {
-    Typography,
-    Card,
-    CardContent,
-    List,
-    ListItem,
-    ListItemText,
-    Divider,
-    Box,
-} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { CircularProgress, Typography, Box, IconButton } from '@mui/material';
+import CharacterCard from '../components/CharacterCard';
+import { fetchCharacters } from '../store/charactersSlice';
+import { useAppDispatch } from '../hooks/useAppDispatch';
+import { useAppSelector } from '../hooks/useAppSelector';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-interface CharacterInfoProps {
-    character: {
-        name: string;
-        height: string;
-        mass: string;
-        hair_color: string;
-        skin_color: string;
-        eye_color: string;
-        birth_year: string;
-        gender: string;
-        homeworld: string;
-        films: string[];
-        species: string[];
-        vehicles: string[];
-        starships: string[];
-    };
-}
+const CharacterInfo: React.FC = () => {
+  const { name } = useParams<{ name: string }>();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-const CharacterInfo: React.FC<CharacterInfoProps> = ({ character }) => {
+  const { list: characters, loading, error } = useAppSelector((state) => state.characters);
+  const [loadingCharacter, setLoadingCharacter] = useState(false);
+
+  const characterFromState = characters?.find(
+    (char) => char?.name?.toLowerCase() === name?.replace('-', ' ').toLowerCase()
+  );
+
+  useEffect(() => {
+    if (!characterFromState) {
+      setLoadingCharacter(true);
+      dispatch(fetchCharacters({ page: 1 }))
+        .finally(() => setLoadingCharacter(false));
+    }
+  }, [characterFromState, dispatch, name]);
+
+  if (loading || loadingCharacter) {
     return (
-        <Card elevation={3}>
-            <CardContent >
-                <Typography variant="h4" component="h1" gutterBottom>
-                    Character Name
-                </Typography>
-                <Divider style={{ margin: '20px 0' }} />
-
-                <Box display="flex" flexDirection="column" gap={2}>
-                    <Box display="flex" alignItems="center" gap={1}>
-
-                        <Typography variant="subtitle1">Personal Information</Typography>
-                    </Box>
-                    <List>
-                        <ListItem>
-                            <ListItemText primary="Gender" secondary={character.gender} />
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText
-                                primary="Birth Year"
-
-                            />
-
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText
-                                primary="Height"
-                            />
-
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText
-                                primary="Mass"
-                            />
-
-                        </ListItem>
-                    </List>
-
-                    <Box display="flex" alignItems="center" gap={1}>
-
-                        <Typography variant="subtitle1">Appearance</Typography>
-                    </Box>
-                    <List>
-                        <ListItem>
-                            <ListItemText primary="Hair Color" />
-
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText primary="Skin Color" />
-
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText primary="Eye Color" />
-
-                        </ListItem>
-                    </List>
-
-                    <Box display="flex" alignItems="center" gap={1}>
-                        <Typography variant="subtitle1">Additional Information</Typography>
-                    </Box>
-
-                    <List>
-                        <ListItem>
-                            <ListItemText primary="Homeworld" />
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText
-                                primary="Films"
-
-                            />
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText
-                                primary="Species"
-                            />
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText
-                                primary="Vehicles"
-                            />
-                        </ListItem>
-                    </List>
-                </Box>
-            </CardContent>
-        </Card>
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+        <CircularProgress />
+      </Box>
     );
+  }
+
+  if (error) {
+    return (
+      <Typography color="error" align="center">
+        Error: {error}
+      </Typography>
+    );
+  }
+
+  const character = characterFromState;
+
+  if (!character) {
+    return (
+
+      <Box>
+        <IconButton onClick={() => navigate('/')}>
+          <ArrowBackIcon style={{ fontSize: "40px" }} />
+        </IconButton>
+        <Typography align="center">
+          Character not found
+        </Typography>
+      </Box>
+    );
+  }
+
+  return (
+
+    <Box mt={3} p="30px">
+
+      <Box display="flex" alignItems='center' mb="12px" >
+        <IconButton onClick={() => navigate('/')}>
+          <ArrowBackIcon style={{ fontSize: "40px" }} />
+        </IconButton>
+
+        <Typography variant="h4" component="h1" >
+          Details
+        </Typography>
+      </Box>
+
+      <CharacterCard character={character} />
+    </Box >
+  );
 };
 
 export default CharacterInfo;

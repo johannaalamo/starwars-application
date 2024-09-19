@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Button, Card, CardContent, Box, CircularProgress } from '@mui/material';
 import { Grid } from '@mui/joy';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { fetchCharacters } from '../store/charactersSlice';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
@@ -9,26 +9,27 @@ import SearchBar from '../components/SearchBar';
 
 const CharactersList: React.FC = () => {
     const dispatch = useAppDispatch();
-    const { list: characters, loading, error, nextPage, previousPage } = useAppSelector(state => state?.characters);
     const navigate = useNavigate();
+    const { list: characters, loading, error, nextPage } = useAppSelector(state => state?.characters);
+
+    const [searchParams, setSearchParams] = useSearchParams();
+    const page = parseInt(searchParams.get('page') || '1', 10);
+
     const [searchTerm, setSearchTerm] = useState('');
 
+
     useEffect(() => {
-        dispatch(fetchCharacters({ page: 1, search: searchTerm }));
-    }, [dispatch, searchTerm]);
+        dispatch(fetchCharacters({ page }));
+    }, [dispatch, page]);
 
     const handleNextPage = () => {
-        if (nextPage) {
-            const nextPageNumber = Number(new URL(nextPage).searchParams.get('page'));
-            dispatch(fetchCharacters({ page: nextPageNumber, search: searchTerm }));
-        }
+        const newPage = String(page + 1);
+        setSearchParams({ page: newPage });
     };
 
     const handlePreviousPage = () => {
-        if (previousPage) {
-            const prevPageNumber = Number(new URL(previousPage).searchParams.get('page'));
-            dispatch(fetchCharacters({ page: prevPageNumber, search: searchTerm }));
-        }
+        const newPage = String(page - 1);
+        setSearchParams({ page: newPage });
     };
 
     const handleSearchChange = (newSearchTerm: string) => {
@@ -45,7 +46,7 @@ const CharactersList: React.FC = () => {
                 Star Wars Characters
             </Typography>
 
-            <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange}/>
+            <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
 
             <Grid container spacing={2}>
                 {characters.map((character, index) => (
@@ -72,7 +73,7 @@ const CharactersList: React.FC = () => {
                     color="secondary"
                     style={{ marginTop: '20px' }}
                     onClick={handlePreviousPage}
-                    disabled={!previousPage}
+                    disabled={page === 1}
                 >
                     Previous
                 </Button>

@@ -27,6 +27,7 @@ const initialState: CharacterState = {
     films: {},
     vehicles: {},
     starships: {},
+    homeworld: ""
   },
 };
 
@@ -94,6 +95,8 @@ const charactersSlice = createSlice({
             state.additionalInfo.vehicles[item.url] = item?.name;
           } else if (item.url.includes('/starships/')) {
             state.additionalInfo.starships[item.url] = item?.name;
+          } else if (item.url.includes('/planets/')) {
+            state.additionalInfo.homeworld = item.name; 
           }
         });
       });

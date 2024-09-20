@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface CharactersState {
     list?: Character[];
     loading?: boolean;
@@ -24,4 +26,5 @@ export interface CharactersState {
     films: Record<string, string>;
     vehicles: Record<string, string>;
     starships: Record<string, string>;
+    homeworld: ReactNode;
   }

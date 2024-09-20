@@ -28,8 +28,9 @@ const CharacterInfo: React.FC = () => {
       const filmsUrls = characterFromState?.films || [];
       const vehiclesUrls = characterFromState?.vehicles || [];
       const starshipsUrls = characterFromState?.starships || [];
+      const homeworldUrl = characterFromState?.homeworld ? [characterFromState.homeworld] : [];
       
-      const urls = [...filmsUrls, ...vehiclesUrls, ...starshipsUrls];
+      const urls = [...filmsUrls, ...vehiclesUrls, ...starshipsUrls, ...homeworldUrl];
 
       if (urls.length > 0) {
         dispatch(fetchAdditionalInfo(urls));

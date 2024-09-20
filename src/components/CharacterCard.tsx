@@ -30,7 +30,7 @@ interface CharacterCardProps {
 
 const CharacterCard: React.FC<CharacterCardProps> = ({ character, additionalInfo }) => {
 
-    console.log(character)
+    console.log(additionalInfo)
 
     return (
         <Card elevation={3}>
@@ -92,7 +92,7 @@ const CharacterCard: React.FC<CharacterCardProps> = ({ character, additionalInfo
                         <List>
                             <ListItem>
                                 <ListItemIcon><PublicIcon /></ListItemIcon>
-                                <ListItemText primary="Homeworld" secondary={character?.homeworld || 'Unknown'} />
+                                <ListItemText primary="Homeworld" secondary={additionalInfo?.homeworld || 'Unknown'} />
                             </ListItem>
 
                             <ListItem>

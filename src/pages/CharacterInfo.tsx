@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CircularProgress, Typography, Box, IconButton } from '@mui/material';
 import CharacterCard from '../components/CharacterCard';
-import { fetchCharacters, fetchAdditionalInfo } from '../store/charactersSlice'; // Asegúrate de importar fetchAdditionalInfo
+import { fetchCharacters, fetchAdditionalInfo } from '../store/charactersSlice';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';

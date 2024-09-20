@@ -42,7 +42,6 @@ const CharacterCard: React.FC<CharacterCardProps> = ({ character, additionalInfo
                 <Divider style={{ margin: '20px 0' }} />
 
                 <Box display="flex" gap={2} justifyContent="space-between">
-                    {/* Información personal */}
                     <Box>
                         <Typography fontWeight="600" variant="subtitle1">Personal Information</Typography>
                         <List>
@@ -68,7 +67,6 @@ const CharacterCard: React.FC<CharacterCardProps> = ({ character, additionalInfo
                         </List>
                     </Box>
 
-                    {/* Apariencia */}
                     <Box>
                         <Typography fontWeight="600" variant="subtitle1">Appearance</Typography>
                         <List>
@@ -89,7 +87,6 @@ const CharacterCard: React.FC<CharacterCardProps> = ({ character, additionalInfo
                         </List>
                     </Box>
 
-                    {/* Información adicional */}
                     <Box>
                         <Typography fontWeight="600" variant="subtitle1">Additional Information</Typography>
                         <List>

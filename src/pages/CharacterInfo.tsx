@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CircularProgress, Typography, Box, IconButton } from '@mui/material';
 import CharacterCard from '../components/CharacterCard';
-import { fetchCharacters } from '../store/charactersSlice';
+import { fetchCharacters, fetchAdditionalInfo } from '../store/charactersSlice'; // Asegúrate de importar fetchAdditionalInfo
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -12,7 +12,7 @@ const CharacterInfo: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { list: characters, loading, error } = useAppSelector((state) => state.characters);
+  const { list: characters, loading, error, additionalInfo } = useAppSelector((state) => state?.characters);
   const [loadingCharacter, setLoadingCharacter] = useState(false);
 
   const characterFromState = characters?.find(
@@ -24,6 +24,16 @@ const CharacterInfo: React.FC = () => {
       setLoadingCharacter(true);
       dispatch(fetchCharacters({ page: 1 }))
         .finally(() => setLoadingCharacter(false));
+    } else {
+      const filmsUrls = characterFromState?.films || [];
+      const vehiclesUrls = characterFromState?.vehicles || [];
+      const starshipsUrls = characterFromState?.starships || [];
+      
+      const urls = [...filmsUrls, ...vehiclesUrls, ...starshipsUrls];
+
+      if (urls.length > 0) {
+        dispatch(fetchAdditionalInfo(urls));
+      }
     }
   }, [characterFromState, dispatch, name]);
 
@@ -47,7 +57,6 @@ const CharacterInfo: React.FC = () => {
 
   if (!character) {
     return (
-
       <Box>
         <IconButton onClick={() => navigate('/')}>
           <ArrowBackIcon style={{ fontSize: "40px" }} />
@@ -60,21 +69,18 @@ const CharacterInfo: React.FC = () => {
   }
 
   return (
-
     <Box mt={3} p="30px">
-
-      <Box display="flex" alignItems='center' mb="12px" >
+      <Box display="flex" alignItems='center' mb="12px">
         <IconButton onClick={() => navigate('/')}>
           <ArrowBackIcon style={{ fontSize: "40px" }} />
         </IconButton>
-
-        <Typography variant="h4" component="h1" >
+        <Typography variant="h4" component="h1">
           Details
         </Typography>
       </Box>
 
-      <CharacterCard character={character} />
-    </Box >
+      <CharacterCard character={character} additionalInfo={additionalInfo} />
+    </Box>
   );
 };
 

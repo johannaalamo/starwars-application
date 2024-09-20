@@ -20,3 +20,8 @@ export interface CharactersState {
     starships?: string[];
   }
   
+  export interface AdditionalInfo {
+    films: Record<string, string>;
+    vehicles: Record<string, string>;
+    starships: Record<string, string>;
+  }

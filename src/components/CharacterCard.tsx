@@ -8,7 +8,6 @@ import {
     ListItemText,
     Divider,
     Box,
-    Chip,
     ListItemIcon,
 } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
@@ -22,162 +21,96 @@ import PublicIcon from '@mui/icons-material/Public';
 import MovieIcon from '@mui/icons-material/Movie';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import RocketIcon from '@mui/icons-material/Rocket';
-import { Character } from '../interfaces/types';
+import { AdditionalInfo, Character } from '../interfaces/types';
 
 interface CharacterCardProps {
-    character?: Character;
+    character: Character;
+    additionalInfo: AdditionalInfo;
 }
 
-const CharacterCard: React.FC<CharacterCardProps> = ({ character }) => {
-    if (!character) {
-        return <Typography>No character data available</Typography>;
-    }
+const CharacterCard: React.FC<CharacterCardProps> = ({ character, additionalInfo }) => {
+
+    console.log(additionalInfo)
 
     return (
         <Card elevation={3}>
             <CardContent>
                 <Typography variant="h4" component="h1" gutterBottom>
-                    {character?.name}
+                    {character.name}
                 </Typography>
 
                 <Divider style={{ margin: '20px 0' }} />
 
                 <Box display="flex" gap={2} justifyContent="space-between">
+                    {/* Información personal */}
                     <Box>
                         <Typography fontWeight="600" variant="subtitle1">Personal Information</Typography>
                         <List>
                             <ListItem>
-                                <ListItemIcon>
-                                    <PersonIcon />
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary="Gender"
-                                    secondary={character?.gender || 'Unknown'}
-                                />
+                                <ListItemIcon><PersonIcon /></ListItemIcon>
+                                <ListItemText primary="Gender" secondary={character?.gender || 'Unknown'} />
                             </ListItem>
 
                             <ListItem>
-                                <ListItemIcon>
-                                    <CalendarTodayIcon />
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary="Birth Year"
-                                    secondary={character?.birth_year || 'Unknown'} />
+                                <ListItemIcon><CalendarTodayIcon /></ListItemIcon>
+                                <ListItemText primary="Birth Year" secondary={character?.birth_year || 'Unknown'} />
                             </ListItem>
 
                             <ListItem>
-                                <ListItemIcon>
-                                    <StraightenIcon />
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary="Height"
-                                    secondary={`${character?.height} cm` || 'Unknown'} />
+                                <ListItemIcon><StraightenIcon /></ListItemIcon>
+                                <ListItemText primary="Height" secondary={`${character?.height} cm`} />
                             </ListItem>
 
                             <ListItem>
-                                <ListItemIcon>
-                                    <FitnessCenterIcon />
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary="Mass"
-                                    secondary={`${character?.mass} kg` || 'Unknown'} />
+                                <ListItemIcon><FitnessCenterIcon /></ListItemIcon>
+                                <ListItemText primary="Mass" secondary={`${character?.mass} kg`} />
                             </ListItem>
                         </List>
                     </Box>
 
+                    {/* Apariencia */}
                     <Box>
                         <Typography fontWeight="600" variant="subtitle1">Appearance</Typography>
                         <List>
                             <ListItem>
-                                <ListItemIcon>
-                                    <BrushIcon />
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary="Hair Color"
-                                    secondary={character?.hair_color || 'Unknown'} />
+                                <ListItemIcon><BrushIcon /></ListItemIcon>
+                                <ListItemText primary="Hair Color" secondary={character?.hair_color || 'Unknown'} />
                             </ListItem>
 
                             <ListItem>
-                                <ListItemIcon>
-                                    <PaletteIcon />
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary="Skin Color"
-                                    secondary={character?.skin_color || 'Unknown'} />
+                                <ListItemIcon><PaletteIcon /></ListItemIcon>
+                                <ListItemText primary="Skin Color" secondary={character?.skin_color || 'Unknown'} />
                             </ListItem>
 
                             <ListItem>
-                                <ListItemIcon>
-                                    <VisibilityIcon />
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary="Eye Color"
-                                    secondary={character?.eye_color || 'Unknown'} />
+                                <ListItemIcon><VisibilityIcon /></ListItemIcon>
+                                <ListItemText primary="Eye Color" secondary={character?.eye_color || 'Unknown'} />
                             </ListItem>
                         </List>
                     </Box>
 
+                    {/* Información adicional */}
                     <Box>
                         <Typography fontWeight="600" variant="subtitle1">Additional Information</Typography>
                         <List>
                             <ListItem>
-                                <ListItemIcon>
-                                    <PublicIcon />
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary="Homeworld"
-                                    secondary={character?.homeworld || 'Unknown'}
-                                />
+                                <ListItemIcon><PublicIcon /></ListItemIcon>
+                                <ListItemText primary="Homeworld" secondary={additionalInfo?.films[character?.homeworld || "Unknown"]} />
                             </ListItem>
 
                             <ListItem>
-                                <ListItemIcon>
-                                    <MovieIcon />
-                                </ListItemIcon>
-
-                                <ListItemText
-                                    primary="Films"
-                                    secondary={
-                                        <Box display="flex" flexWrap="wrap" gap={1}>
-                                            {character?.films?.map((film, index) => (
-                                                <Chip key={index} label={film} size="small" />
-                                            ))}
-                                        </Box>
-                                    }
-                                />
+                                <ListItemIcon><MovieIcon /></ListItemIcon>
+                                <ListItemText primary="Films" secondary={character?.films?.map(film => additionalInfo?.films[film] || 'Unknown').join(', ')} />
                             </ListItem>
 
                             <ListItem>
-                                <ListItemIcon>
-                                    <DirectionsCarIcon />
-                                </ListItemIcon>
-
-                                <ListItemText
-                                    primary="Vehicles"
-                                    secondary={
-                                        <Box display="flex" flexWrap="wrap" gap={1}>
-                                            {character?.vehicles?.map((vehicle, index) => (
-                                                <Chip key={index} label={vehicle} size="small" />
-                                            ))}
-                                        </Box>
-                                    }
-                                />
+                                <ListItemIcon><DirectionsCarIcon /></ListItemIcon>
+                                <ListItemText primary="Vehicles" secondary={character?.vehicles?.map(vehicle => additionalInfo?.vehicles[vehicle] || 'Unknown').join(', ')} />
                             </ListItem>
 
                             <ListItem>
-                                <ListItemIcon>
-                                    <RocketIcon />
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary="Starships"
-                                    secondary={
-                                        <Box display="flex" flexWrap="wrap" gap={1}>
-                                            {character?.starships?.map((starship, index) => (
-                                                <Chip key={index} label={starship} size="small" />
-                                            ))}
-                                        </Box>
-                                    }
-                                />
+                                <ListItemIcon><RocketIcon /></ListItemIcon>
+                                <ListItemText primary="Starships" secondary={character?.starships?.map(starship => additionalInfo?.starships[starship] || 'Unknown').join(', ')} />
                             </ListItem>
                         </List>
                     </Box>

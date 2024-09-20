@@ -30,7 +30,7 @@ interface CharacterCardProps {
 
 const CharacterCard: React.FC<CharacterCardProps> = ({ character, additionalInfo }) => {
 
-    console.log(additionalInfo)
+    console.log(character)
 
     return (
         <Card elevation={3}>
@@ -92,22 +92,22 @@ const CharacterCard: React.FC<CharacterCardProps> = ({ character, additionalInfo
                         <List>
                             <ListItem>
                                 <ListItemIcon><PublicIcon /></ListItemIcon>
-                                <ListItemText primary="Homeworld" secondary={additionalInfo?.films[character?.homeworld || "Unknown"]} />
+                                <ListItemText primary="Homeworld" secondary={character?.homeworld || 'Unknown'} />
                             </ListItem>
 
                             <ListItem>
                                 <ListItemIcon><MovieIcon /></ListItemIcon>
-                                <ListItemText primary="Films" secondary={character?.films?.map(film => additionalInfo?.films[film] || 'Unknown').join(', ')} />
+                                <ListItemText primary="Films" secondary={character?.films?.map(film => additionalInfo?.films[film]).join(', ') || 'Unknown'} />
                             </ListItem>
 
                             <ListItem>
                                 <ListItemIcon><DirectionsCarIcon /></ListItemIcon>
-                                <ListItemText primary="Vehicles" secondary={character?.vehicles?.map(vehicle => additionalInfo?.vehicles[vehicle] || 'Unknown').join(', ')} />
+                                <ListItemText primary="Vehicles" secondary={character?.vehicles?.map(vehicle => additionalInfo?.vehicles[vehicle]).join(', ') || 'Unknown'} />
                             </ListItem>
 
                             <ListItem>
                                 <ListItemIcon><RocketIcon /></ListItemIcon>
-                                <ListItemText primary="Starships" secondary={character?.starships?.map(starship => additionalInfo?.starships[starship] || 'Unknown').join(', ')} />
+                                <ListItemText primary="Starships" secondary={character?.starships?.map(starship => additionalInfo?.starships[starship] ).join(', ')|| 'Unknown'} />
                             </ListItem>
                         </List>
                     </Box>

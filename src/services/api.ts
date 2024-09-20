@@ -9,7 +9,6 @@ export interface PeopleResponse {
   previous: string | null;
 }
 
-
 export const fetchPeople = async ({ page, search }: { page: number; search?: string }) => {
   const response = await axios.get<PeopleResponse>(`${BASE_URL}/people/`, { params: { page, search }});
   return response.data;

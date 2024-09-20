@@ -44,7 +44,7 @@ const CharactersList: React.FC = () => {
             <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
 
             <Grid container spacing={2}>
-                {characters.map((character, index) => (
+                {characters?.map((character, index) => (
                     <Grid xs={12} sm={6} md={4} key={index}>
                         <Card>
                             <CardContent>

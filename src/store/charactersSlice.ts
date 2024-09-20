@@ -4,9 +4,13 @@ import axios from 'axios';
 export const fetchCharacters = createAsyncThunk(
   'characters/fetchCharacters',
   async ({ page, search }: { page: number; search?: string }) => {
-    const response = await axios.get('https://swapi.dev/api/people/', {
-      params: { page, search },
-    });
+    let response;
+    if (search) {
+      response = await axios.get(`https://swapi.dev/api/people/?search=${search}`);
+    } else {
+      response = await axios.get(`https://swapi.dev/api/people/?page=${page}`);
+    }
+    
     return {
       results: response?.data?.results,
       next: response?.data?.next,
@@ -37,18 +41,18 @@ const charactersSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCharacters?.pending, (state) => {
+      .addCase(fetchCharacters.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchCharacters?.fulfilled, (state, action) => {
-        state.list = action?.payload?.results;
-        state.nextPage = action?.payload?.next;
-        state.previousPage = action?.payload?.previous;
+      .addCase(fetchCharacters.fulfilled, (state, action) => {
+        state.list = action.payload.results;
+        state.nextPage = action.payload.next;
+        state.previousPage = action.payload.previous;
         state.loading = false;
       })
-      .addCase(fetchCharacters?.rejected, (state, action) => {
-        state.error = action?.error?.message || 'Failed to fetch characters';
+      .addCase(fetchCharacters.rejected, (state, action) => {
+        state.error = action.error.message || 'Failed to fetch characters';
         state.loading = false;
       });
   },
